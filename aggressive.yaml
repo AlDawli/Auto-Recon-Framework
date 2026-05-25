@@ -1,0 +1,58 @@
+# ─────────────────────────────────────────────────────────────────
+# Auto Recon Framework - AGGRESSIVE preset
+# Maximum coverage, all templates, all severities
+# Usage: python main.py -t example.com -c config/aggressive.yaml
+# ─────────────────────────────────────────────────────────────────
+
+output:
+  format:
+    - markdown
+    - json
+
+nmap:
+  ports: "1-65535"
+  timing: "-T5"
+  flags: "-sV -sC -O --open -A"
+  timeout: 600
+  extra_args: "--script=vuln"
+
+subfinder:
+  threads: 200
+  recursive: true
+  all_sources: true
+  resolvers:
+    - 8.8.8.8
+    - 1.1.1.1
+    - 9.9.9.9
+
+httpx:
+  threads: 100
+  timeout: 15
+  follow_redirects: true
+  probe_tech: true
+
+nuclei:
+  templates:
+    - cves
+    - vulnerabilities
+    - exposures
+    - misconfiguration
+    - default-credentials
+    - takeovers
+    - network
+    - dns
+  severity:
+    - critical
+    - high
+    - medium
+    - low
+    - info
+  rate_limit: 300
+  bulk_size: 50
+  update_templates: true
+
+screenshot:
+  enabled: true
+  timeout: 20
+  threads: 20
+  full_page: true

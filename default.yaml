@@ -1,0 +1,61 @@
+# ─────────────────────────────────────────────────────────────────
+# Auto Recon Framework - Default Configuration
+# Run: python main.py --init-config  to regenerate
+# Docs: docs/configuration.md
+# ─────────────────────────────────────────────────────────────────
+
+output:
+  base_dir: output
+  reports_dir: output/reports
+  screenshots_dir: output/screenshots
+  json_dir: output/json
+  format:
+    - markdown
+    - json
+
+nmap:
+  ports: "1-65535"
+  timing: "-T4"
+  flags: "-sV -sC -O --open"
+  timeout: 300
+  extra_args: ""
+
+subfinder:
+  timeout: 30
+  threads: 100
+  recursive: true
+  all_sources: false
+  resolvers:
+    - 8.8.8.8
+    - 1.1.1.1
+
+httpx:
+  timeout: 10
+  threads: 50
+  follow_redirects: true
+  probe_tech: true
+  status_codes: true
+  title: true
+  content_length: true
+
+nuclei:
+  templates:
+    - cves
+    - vulnerabilities
+    - exposures
+    - misconfiguration
+  severity:
+    - critical
+    - high
+    - medium
+  rate_limit: 150
+  bulk_size: 25
+  timeout: 10
+  retries: 1
+  update_templates: true
+
+screenshot:
+  enabled: true
+  timeout: 15
+  threads: 10
+  full_page: false

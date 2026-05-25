@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────────
+# Auto Recon Framework - STEALTH preset
+# Slower, quieter, lower rate limits — reduces detection risk
+# Usage: python main.py -t example.com -c config/stealth.yaml
+# ─────────────────────────────────────────────────────────────────
+
+output:
+  format:
+    - markdown
+    - json
+
+nmap:
+  ports: "21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1723,3306,3389,5900,8080,8443"
+  timing: "-T2"
+  flags: "-sV --open"
+  timeout: 600
+  extra_args: "--randomize-hosts --scan-delay 500ms"
+
+subfinder:
+  threads: 20
+  recursive: false
+  all_sources: false
+  resolvers:
+    - 8.8.8.8
+    - 1.1.1.1
+
+httpx:
+  threads: 10
+  timeout: 20
+  follow_redirects: false
+  probe_tech: false
+
+nuclei:
+  templates:
+    - cves
+    - exposures
+  severity:
+    - critical
+    - high
+  rate_limit: 30
+  bulk_size: 5
+  update_templates: false
+
+screenshot:
+  enabled: false

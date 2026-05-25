@@ -1,0 +1,52 @@
+# ─────────────────────────────────────────────────────────────────
+# Auto Recon Framework - WEB preset
+# Focused HTTP/HTTPS attack surface only — no deep port scan
+# Usage: python main.py -t example.com -c config/web.yaml
+# ─────────────────────────────────────────────────────────────────
+
+output:
+  format:
+    - markdown
+    - json
+
+nmap:
+  ports: "80,443,8080,8443,8000,8888,3000,4000,4443,9090,9443"
+  timing: "-T4"
+  flags: "-sV --open"
+  timeout: 120
+
+subfinder:
+  threads: 100
+  recursive: true
+  all_sources: false
+
+httpx:
+  threads: 75
+  timeout: 10
+  follow_redirects: true
+  probe_tech: true
+  title: true
+  content_length: true
+
+nuclei:
+  templates:
+    - cves
+    - vulnerabilities
+    - exposures
+    - misconfiguration
+    - xss
+    - sqli
+    - ssrf
+    - lfi
+    - rce
+  severity:
+    - critical
+    - high
+    - medium
+  rate_limit: 150
+  update_templates: true
+
+screenshot:
+  enabled: true
+  timeout: 15
+  threads: 15

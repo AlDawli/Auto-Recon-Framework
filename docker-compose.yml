@@ -1,0 +1,55 @@
+---
+# Auto Recon Framework - Docker Compose
+# Usage: docker-compose run --rm recon -t example.com
+
+version: "3.9"
+
+services:
+  recon:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: auto-recon:latest
+    container_name: auto-recon
+
+    # Security: drop all capabilities, only add needed ones
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW        # nmap raw sockets
+      - NET_ADMIN      # nmap OS detection
+
+    # Persist output
+    volumes:
+      - ./output:/app/output
+      - ./config:/app/config:ro
+
+    # Override config via environment
+    environment:
+      - RECON_OUTPUT_DIR=/app/output
+      - RECON_VERBOSE=${RECON_VERBOSE:-false}
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: "2.0"
+
+    # Don't restart on failure — this is a one-shot tool
+    restart: "no"
+
+    # Use host network for accurate nmap results
+    network_mode: host
+
+  # Optional: watch output directory and serve report
+  report-server:
+    image: nginx:alpine
+    container_name: auto-recon-reports
+    profiles:
+      - reports
+    volumes:
+      - ./output/reports:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+    restart: unless-stopped
